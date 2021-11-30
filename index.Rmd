@@ -1,7 +1,13 @@
 ---
-title: "Exercise Solutions Module 4"
-date: "30/11/2021"
-output: html_document
+title: "Introduction to R - Module 4 Solutions"
+output:
+  learnr::tutorial:
+    progressive: yes
+    allow_skip: yes
+    df_print: default
+runtime: shiny_prerendered
+description: |
+  Effective use of RStudio
 ---
 
 ```{r setup, include=FALSE}
