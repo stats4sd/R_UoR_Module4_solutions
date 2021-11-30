@@ -1,0 +1,68 @@
+---
+title: "Exercise Solutions Module 4"
+date: "30/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(learnr)
+Happiness <- read.csv("Happiness.csv")
+```
+
+## Exercises
+**Exercise 1: Now that you have imported the Happiness dataset into R – let’s do a quick exercise to recap what we learnt in Modules 1-3, but writing out the code entirely in RStudio instead of online.**
+
+1.	Find the 5 countries with the lowest ‘generosity scores’  
+
+We of course need to start with `arrange()` so we can order our data according to the Generosity variable. We do not need to add in the `desc()` function because we want the lowest scores to come up first.
+
+We don't have to but we can then use `select()` to select only the Country.or.region and Generosity columns as for this example, these are the only variables we are focusing on.
+
+Finally we can filter down to just those 5 lowest scores by using the `slice()` function. This can work in a similar way to `select()`function except we are selecting rows rather than columns. We can use a list of row numbers in `c()` or if the rows are grouped together we can use the colon in the same way we use it in the `select()` function. Here we use `1:5` to singal we want to only keep rows 1 through 5.
+
+```{r ex1}
+Happiness%>%
+  arrange(Generosity)%>%
+  select(Country.or.region, Generosity)%>%
+  slice(1:5)
+```
+
+2.	Produce a subset of countries which have below average scores for both GDP and generosity.  
+
+Here we can just use `filter()` in similar ways that we have done before such as when looking for a lowest or highest rated movie as in the previous module. But rather than using `min` or `max` we can use `mean` instead to filter down to those that are below the average for a given variable. We do this for both Generosity and GDP, remember to use `&`. We have also specified `na.rm = TRUE` to correct for any missing data, there shouldn't be in this data but it is often a good idea to include this argument to be on the safe side.
+
+```{r ex2}
+Happiness_subset <- Happiness%>%
+  filter(
+    Generosity < mean(Generosity, na.rm = TRUE) & GDP.per.capita < mean(GDP.per.capita, na.rm = TRUE)
+  )
+
+Happiness_subset
+```
+
+
+3.	Make a plot showing the relationship between generosity and GDP per capita  
+
+We start by setting up our aesthetics in the usual way. It does not really matter either way which variable is on which axis for this case.
+
+As we are investigating the relationship between two continuous variables, our preferred choice of plot would be a scatterplot. For which the funciton is `geom_point()`. We do not need to specify any further arguments.
+
+I can't really tell anything directly, it doesn't seem there is much of a relationship just by looking at the points. Alternatively i can add in a line of best fit using `geom_smooth()`. Now here we have specified the argument method to be equal to "lm". The method argument tells R how to plot this line of best fit. By default smooth tries to pick itself what is the best method, usually opting for what is known as "loess" which is a sort of moving average. "lm" however will tell R to fit the line using a more standard "linear model", or in other words regression. 
+
+There is a slight downwards trend to the line but this may not be substantial enough to conclude there is a relationship.
+ 
+```{r}
+Happiness%>%
+  ggplot(aes(x = Generosity, y = GDP.per.capita))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  labs(title = "GDP per capita by National Generosity Score")
+```
+ 
+
+**Exercise 2: Download the file below that contains the imdb dataset and the solutions for the module 3 exercises. Save these in your project folder. Import the data using RStudio menu and go through the R Markdown file to reproduce the solutions in your own machine**
+
+[Module-3-Data-and-Solutions.zip](https://github.com/stats4sd/r2020_04Quiz/raw/main/Module-3-Data-and-Solutions.zip)
+
+These exercises were largely reviewed in the in-person session as they are a review of Module 3 exercises but using Rstudio rather than the online workbooks.
